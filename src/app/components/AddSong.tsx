@@ -1,38 +1,33 @@
 "use client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { v4 as uuidv4 } from "uuid";
 
-import { createSong } from "../services/songsApi";
+import { v4 as uuidv4 } from "uuid";
 import SongForm from "./SongForm";
 import { Song } from "../types/song";
+import { useCreateSong } from "../services/song/useCreateSong";
+import { useRouter } from "next/navigation";
 
 const AddSong = () => {
-  const queryClient = useQueryClient();
+  const { mutate } = useCreateSong();
+  const router = useRouter();
 
-  const createSongMutation = useMutation({
-    mutationFn: createSong,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["songs"] });
-      console.log("Song created successfully", data);
-    },
-    onError: () => {
-      console.log("Error");
-    },
-  });
-
-  const handleAddSong = (song: Omit<Song, "id">) => {
-    createSongMutation.mutate({
-      id: uuidv4(),
-      ...song,
-    });
+  const handleAddSong = async (song: Omit<Song, "id">) => {
+    try {
+      mutate({
+        id: uuidv4(),
+        ...song,
+      });
+      router.push("/song");
+    } catch (error) {
+      console.error("Error adding song:", error);
+    }
   };
 
   return (
-    <div className="container mx-auto my-10 p-5 bg-white rounded-md shadow-lg max-w-3xl">
-      <div className="text-center text-2xl font-semibold mb-10">
+    <div className="flex flex-col min-h-screen bg-gradient-to-t from-purple-700 to-slate-950 text-white">
+      <div className="text-center text-xl font-semibold mt-10">
         Add New Song
       </div>
-      <div className="flex justify-center my-5">
+      <div className="flex flex-col my-5">
         <SongForm
           onSubmit={handleAddSong}
           initialValue={{ song: "", album: "" }}

@@ -1,45 +1,41 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchSong, updateSong } from "../../services/songsApi";
+import { Row, Col } from "antd";
+import { useGetSong } from "@/app/services/song/useGetSong";
 
 const Song = () => {
   const router = useRouter();
-  const params = useParams();
-  const queryClient = useQueryClient();
+  const { id } = useParams<{ id: string }>();
 
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const { isLoading, isError, data: hitSong, error } = useGetSong(id as string);
 
-  const {
-    isPending,
-    isError,
-    data: hitSong,
-    error,
-  } = useQuery({
-    queryKey: ["songs", id],
-    queryFn: () => fetchSong(id as string),
-  });
-
-  const updateSongMutation = useMutation({
-    mutationFn: updateSong,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["songs"] });
-      router.push("/");
-    },
-  });
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
 
   return (
     <>
-      <button onClick={() => router.push("/")} className="btn-general">
-        Back Song List
-      </button>
-      <figure style={{ backgroundColor: "#FFCCCB", padding: "1rem" }}>
-        <h2>Song: {hitSong?.song}</h2>
-        <div>
-          <strong>Album:</strong>
-          {hitSong?.album}
-        </div>
-      </figure>
+      <Row gutter={[16, 16]} className="w-full max-w-4xl">
+        <Col xs={24} sm={12} md={12} lg={12}>
+          <div className="ml-10 mt-10">
+            <button
+              className="bg-teal-500 text-white rounded-md px-5 py-2 mb-5"
+              onClick={() => router.push("/song")}
+            >
+              Back Song List
+            </button>
+            <figure className="flex flex-col p-10 bg-teal-200 rounded-md">
+              <div>
+                <strong>Song: </strong>
+                {hitSong?.song}
+              </div>
+              <div>
+                <strong>Album: </strong>
+                {hitSong?.album}
+              </div>
+            </figure>
+          </div>
+        </Col>
+      </Row>
     </>
   );
 };

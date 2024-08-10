@@ -1,41 +1,29 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchSong, updateSong } from "../../../services/songsApi";
 import SongForm from "../../../components/SongForm";
 import { Song } from "../../../types/song";
 import { Row, Col } from "antd";
+import { useGetSong } from "@/app/services/song/useGetSong";
+import { useUpdateSong } from "@/app/services/song/useUpdateSong";
 
 const EditSong = () => {
   const router = useRouter();
-  const queryClient = useQueryClient();
-
   const { id } = useParams<{ id: string }>();
 
-  const {
-    isLoading,
-    isError,
-    data: song,
-    error,
-  } = useQuery({ queryKey: ["songs", id], queryFn: () => fetchSong(id!) });
+  const { isLoading, isError, data: song, error } = useGetSong(id as string);
 
-  const updateSongMutation = useMutation({
-    mutationFn: updateSong,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["songs"] });
-      router.push("/");
-    },
-  });
+  const updateSongMutation = useUpdateSong();
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return `Error: ${error.message}`;
 
   console.log("Fetched Song Data:", song);
 
-  const handleSubmit = (updateSong: Song) => {
+  const handleSubmit = (updatedSong: Song) => {
     if (id) {
-      updateSongMutation.mutate({ id, ...updateSong });
+      updateSongMutation.mutate({ id, ...updatedSong });
     }
+    router.push("/");
   };
 
   return (
@@ -44,7 +32,7 @@ const EditSong = () => {
         <div className="ml-10 mt-10">
           <button
             onClick={() => router.push("/")}
-            className="btn-general bg-teal-500 text-white rounded-md px-5 py-2 mb-5"
+            className="bg-teal-500 text-white rounded-md px-5 py-2 mb-5"
           >
             Back Song List
           </button>

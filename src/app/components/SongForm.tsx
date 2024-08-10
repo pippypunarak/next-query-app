@@ -35,14 +35,14 @@ const SongForm: FC<SongFormProps> = ({ onSubmit, initialValue }) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(formData);
-    // setFormData({ id: "", song: "", album: "" });
+    setFormData({ song: "", album: "" });
   };
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto">
       <div className="grid gap-6 mb-6 md:grid-cols-1">
-        <div className="mb-6">
-          <label className="block mb-2 text-sm font-medium text-gray-900">
+        <div className="mb-6 mx-6">
+          <label className="block mb-2 text-sm font-base text-white">
             Song
           </label>
           <input
@@ -53,8 +53,8 @@ const SongForm: FC<SongFormProps> = ({ onSubmit, initialValue }) => {
             className="bg-gray-50  text-gray-900 border border-gray-300 text-sm rounded-lg block w-full p-2.5"
           />
         </div>
-        <div className="mb-6">
-          <label className="block mb-2 text-sm font-medium text-gray-900">
+        <div className="mb-6 mx-6">
+          <label className="block mb-2 text-sm font-base text-white">
             Album
           </label>
           <input
@@ -67,7 +67,7 @@ const SongForm: FC<SongFormProps> = ({ onSubmit, initialValue }) => {
         </div>
       </div>
       <button
-        className="bg-green-600 text-white rounded-md px-5 py-2"
+        className="bg-green-600 text-white rounded-md px-5 py-2 ml-6"
         type="submit"
         disabled={!formData.song || !formData.album}
       >
