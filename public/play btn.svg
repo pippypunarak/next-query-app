@@ -1,0 +1,11 @@
+<svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="28" cy="28" r="28" fill="url(#paint0_angular_3_81)"/>
+<path d="M24.5 23.7883C24.5 22.206 26.2505 21.2503 27.5815 22.106L34.133 26.3176C35.3576 27.1049 35.3576 28.8951 34.133 29.6824L27.5815 33.894C26.2505 34.7497 24.5 33.794 24.5 32.2117V23.7883Z" fill="white"/>
+<defs>
+<radialGradient id="paint0_angular_3_81" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(25.8125 29.9688) rotate(108.56) scale(31.613)">
+<stop offset="0.309632" stop-color="#842ED8"/>
+<stop offset="0.588939" stop-color="#DB28A9"/>
+<stop offset="1" stop-color="#9D1DCA"/>
+</radialGradient>
+</defs>
+</svg>

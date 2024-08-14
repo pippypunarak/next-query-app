@@ -45,5 +45,21 @@
       "song": "ใจสมใจ",
       "album": "อูน"
     }
+  ], "albums": [
+    {
+      "id": "1",
+      "albums": "Twilight",
+      "artist": "Taylor Swift"
+    },
+    {
+      "id": "2",      
+      "albums": "Moonlight",
+      "artist": "Too long"
+    },
+        {
+      "id": "3",
+      "albums": "Blade",
+      "artist": "Swift"
+    }
   ]
 }

@@ -7,11 +7,14 @@ import { useGetSongs } from "../services/song/useGetSongs";
 import { useDeleteSong } from "../services/song/useDeleteSong";
 import Navbar from "../components/Navbar";
 import Image from "next/image";
+import { useGetAlbums } from "../services/song/useGetAlbums";
 
 const SongList = () => {
   const router = useRouter();
   const { isLoading, isError, data: songs, error } = useGetSongs();
-  const deleteSongMutation = useDeleteSong();
+  const { data: albums } = useGetAlbums();
+
+  // const deleteSongMutation = useDeleteSong();
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {error.message}</div>;
@@ -41,18 +44,23 @@ const SongList = () => {
       <Navbar />
       <div className="overflow-x-auto whitespace-nowrap ml-6">
         <div className="inline-flex space-x-4">
-          {songs?.slice(0, 3).map((item: Song) => (
+          {albums?.map((item: Song) => (
             <div key={item.id} className="snap-start flex-shrink-0">
               <div className="flex flex-col items-start text-white">
                 <Image
                   alt="songImage"
-                  src="https://cdn.pixabay.com/photo/2018/03/01/05/54/abstract-3189816_1280.jpg"
+                  src="/Rectangle 90.svg"
                   width={208}
                   height={202}
                   className="rounded-lg h-[202px]"
                 />
-                <div className="mt-4 text-md font-bold">{item.song}</div>
-                <div className="mt-1 text-sm font-thin">{item.album}</div>
+                <div
+                  onClick={() => router.push(`/song/album/${item.id}`)}
+                  className="mt-4 text-md font-bold"
+                >
+                  {item.albums}
+                </div>
+                <div className="mt-1 text-sm font-thin">{item.artist}</div>
               </div>
             </div>
           ))}
