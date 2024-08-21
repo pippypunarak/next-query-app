@@ -2,22 +2,31 @@
 
 import { useRouter } from "next/navigation";
 import { Song } from "../types/song";
-import { Row, Col } from "antd";
-import { useGetSongs } from "../services/song/useGetSongs";
 import { useDeleteSong } from "../services/song/useDeleteSong";
 import Navbar from "../components/Navbar";
 import Image from "next/image";
 import { useGetAlbums } from "../services/song/useGetAlbums";
+import ItemsList from "../components/ItemsList";
+import { useGetSongs } from "../services/song/useGetSongs";
 
 const SongList = () => {
   const router = useRouter();
-  const { isLoading, isError, data: songs, error } = useGetSongs();
-  const { data: albums } = useGetAlbums();
+  const {
+    isLoading: isLoadingAlbums,
+    isError: isErrorAlbums,
+    data: albums,
+    error,
+  } = useGetAlbums();
+  const {
+    isLoading: isLoadingSongs,
+    isError: isErrorSongs,
+    data: songList,
+  } = useGetSongs();
+
+  if (isLoadingSongs || isLoadingAlbums) return <div>Loading...</div>;
+  if (isErrorSongs || isErrorAlbums) return <div>Error: {error?.message}</div>;
 
   // const deleteSongMutation = useDeleteSong();
-
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error.message}</div>;
 
   // const handleDelete = (id: string) => {
   //   if (id) {
@@ -27,23 +36,23 @@ const SongList = () => {
 
   return (
     <section className="flex flex-col min-h-screen bg-gradient-to-t from-purple-700 to-slate-950">
-      <div className="ml-6 mt-14 text-2xl font-semibold text-white">
+      <div className="ml-6 mt-14 sm:ml-6 md:ml-8 lg:ml-10 xl:ml-14 text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-4xl font-semibold text-white">
         Welcome back!
       </div>
-      <div className="ml-6 text-white font-thin text-sm mt-2 mb-2">
+      <div className="ml-6 sm:ml-6 md:ml-8 lg:ml-10 xl:ml-14 text-white font-thin text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl mt-2 mb-2">
         What do you feel like today?
       </div>
       <div className="flex flex-col items-center mt-6">
         <button
           onClick={() => router.push(`/song/addsong`)}
-          className="text-white font-base bg-gradient-to-r from-purple-600 to-pink-500 w-[220px] h-[48px] rounded-[32px] mb-6"
+          className="text-white font-base bg-gradient-to-r from-purple-600 to-pink-500 w-[180px] sm:w-[200px] md:w-[220px] lg:w-[240px] xl:w-[260px] h-[40px] sm:h-[44px] md:h-[48px] lg:h-[52px] xl:h-[56px] rounded-[32px] mb-4 sm:mb-6 md:mb-8 lg:mb-10 xl:mb-12"
         >
-          Add your favourite song
+          Add your song
         </button>
       </div>
       <Navbar />
-      <div className="overflow-x-auto whitespace-nowrap ml-6">
-        <div className="inline-flex space-x-4">
+      <div className="overflow-x-auto whitespace-nowrap ml-6 sm:ml-6 md:ml-8 lg:ml-10 xl:ml-14">
+        <div className="inline-flex space-x-4 sm:space-x-4 md:space-x-6 lg:space-x-8 xl:space-x-10">
           {albums?.map((item: Song) => (
             <div key={item.id} className="snap-start flex-shrink-0">
               <div className="flex flex-col items-start text-white">
@@ -52,49 +61,27 @@ const SongList = () => {
                   src="/Rectangle 90.svg"
                   width={208}
                   height={202}
-                  className="rounded-lg h-[202px]"
+                  className="rounded-lg h-[202px] md:h-[202px] lg:h-[240px] xl:h-[260px] cursor-pointer"
+                  onClick={() => router.push(`/song/album/${item.id}`)}
                 />
                 <div
                   onClick={() => router.push(`/song/album/${item.id}`)}
-                  className="mt-4 text-md font-bold"
+                  className="mt-4 sm:mt-4 text-sm sm:text-md md:text-lg lg:text-lg xl:text-xl font-bold cursor-pointer"
                 >
                   {item.albums}
                 </div>
-                <div className="mt-1 text-sm font-thin">{item.artist}</div>
+                <div className="mt-1 sm:text-sm md:text-base lg:text-md xl:text-md font-thin">
+                  {item.artist}
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-      <div className="text-white font-medium text-lg mt-10 ml-6 mb-4">
+      <div className="text-white font-medium text-lg sm:text-lg md:text-xl lg:text-2xl xl:text-3xl mt-6 sm:mt-8 md:mt-10 lg:mt-12 xl:mt-14 ml-6 sm:ml-6 md:ml-8 lg:ml-10 xl:ml-14 mb-4">
         Your favourites
       </div>
-      <Row gutter={[8, 8]} className="w-full mb-6">
-        {songs?.map((item: Song) => (
-          <Col xs={24} sm={12} md={8} lg={6} key={item.id}>
-            <div className="flex text-white mx-6 mt-3">
-              <div className="flex-shrink-0">
-                <Image
-                  alt="songFavImage"
-                  src="https://cdn.pixabay.com/photo/2018/03/20/13/22/sound-3243259_960_720.jpg"
-                  width={56}
-                  height={56}
-                  className="rounded-lg h-[56px]"
-                />
-              </div>
-              <div className="ml-4 flex-1">
-                <div
-                  className="cursor-pointer text-md font-bold hover:text-gray-700"
-                  onClick={() => router.push(`/song/${item.id}`)}
-                >
-                  {item.song}
-                </div>
-                <div className="mt-1 text-sm font-thin">{item.album}</div>
-              </div>
-            </div>
-          </Col>
-        ))}
-      </Row>
+      <ItemsList songList={songList} />
     </section>
   );
 };
